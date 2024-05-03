@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Management System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('https://source.unsplash.com/1600x900/?office,building');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            width: 90%;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9); /* Add opacity to the background */
+            backdrop-filter: blur(10px); /* Apply a blur effect to the background */
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="file"] {
+            display: none;
+        }
+         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Replace the URL below with the URL of your background image */
+            background-image: url('https://images.unsplash.com/photo-1559137781-875af01c14bc?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .custom-file-upload {
+            cursor: pointer;
+            padding: 15px 30px;
+            background-color: #007bff; /* Change button color */
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+            outline: none;
+            display: inline-block;
+            margin-bottom: 20px;
+            border: 2px solid #007bff; /* Add border */
+            text-transform: uppercase; /* Convert text to uppercase */
+            font-weight: bold; /* Make text bold */
+        }
+        .custom-file-upload:hover {
+            background-color: #0056b3; /* Change hover color */
+            border-color: #0056b3; /* Change border color */
+        }
+        button[type="submit"] {
+            cursor: pointer;
+            padding: 15px 30px;
+            background-color: #28a745; /* Change button color */
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+            outline: none;
+            border: 2px solid #28a745; /* Add border */
+            text-transform: uppercase; /* Convert text to uppercase */
+            font-weight: bold; /* Make text bold */
+        }
+        button[type="submit"]:hover {
+            background-color: #218838; /* Change hover color */
+            border-color: #218838; /* Change border color */
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #555555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Visitor Management System</h1>
+        <form id="upload-form" enctype="multipart/form-data">
+            <label for="file-upload" class="custom-file-upload" id="choose-image-btn">Choose Image</label>
+            <input id="file-upload" type="file" name="image" accept="image/*" onchange="displayFileName()">
+            <button type="submit">Recognize</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function displayFileName() {
+            var fileName = document.getElementById('file-upload').files[0].name;
+            var resultElement = document.getElementById('result');
+            resultElement.innerText = 'Selected file: ' + fileName;
+        }
+
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var formData = new FormData(this);
+            fetch('/recognize', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                var resultElement = document.getElementById('result');
+                if (data.recognized_person === "Imposter") {
+                    resultElement.innerText = 'Sorry, No Access';
+                } else {
+                    resultElement.innerText = 'Welcome, ' + data.recognized_person + '!';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
